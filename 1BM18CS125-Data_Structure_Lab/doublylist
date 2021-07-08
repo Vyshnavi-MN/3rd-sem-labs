@@ -1,0 +1,224 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct Node{
+    int val;
+    struct Node *next;
+    struct Node *prev;
+};
+
+typedef struct Node* node;
+
+node getnode(int item){
+    node temp;
+    temp = (node)malloc(sizeof(struct Node));
+    temp->val = item;
+    temp->next = NULL ;
+    temp->prev = NULL ;
+    return temp;
+};
+
+node ins_beg(node first , int item){
+    node temp;
+    temp = getnode(item);
+    if(first == NULL){
+        printf("Empty\n");
+        return temp;
+    }
+    else{
+        temp->next = first;
+        first = temp;
+        return first;
+    }
+}
+
+node ins_end(node first , int item){
+    node temp  , curr;
+    temp = getnode(item);
+    if(first == NULL){
+        printf("Empty\n");
+        return temp;
+    }
+    else{
+        curr = first;
+        while(curr->next != NULL){
+            curr = curr->next;
+        }
+        curr->next = temp;
+        temp->prev = curr;
+        return first;
+    }
+}
+
+node display(node first){
+    node curr;
+    curr = first;
+    if(first == NULL){
+        printf("List is empty\n");
+    }
+    printf("The elements in list : \n");
+    while(curr != NULL){
+        printf("%d ", curr->val);
+        curr = curr->next;
+    }
+    return first;
+}
+
+node insertAtAnyPosition(node head , int x,int pos)  
+{     
+    node temp=NULL;  
+    temp=getnode(x);  
+    if(head==NULL)  
+    {  
+        return temp;
+    }  
+    else  
+    {  
+        node temp2=head;  
+        node temp3=NULL;  
+        int i=0;  
+        for(i=0;i<pos-1;i++)  
+        {  
+            temp2=temp2->next;  
+            temp3=temp2->next;  
+        }  
+        temp->next=temp3;  
+        temp3->prev=temp->next;  
+        temp2->next=temp;  
+        temp->prev=temp2;  
+    }  
+    printf(" After Insertion at any Position  ");
+    display(head);
+    return head;
+}
+
+
+node del_beg(node first){
+    if(first == NULL){
+        printf("List empty\n");
+        return first;
+    }
+    else if(first->next == NULL){
+        printf("element deleted is %d\n", first->val);
+        free(first);
+        return NULL;
+    }
+    else{
+        node temp;
+        temp = first;
+        first = first->next;
+        first->prev = NULL;
+        printf("element deleted is %d\n", temp->val);
+        free(temp);
+        return first;
+    }
+}
+
+node del_end(node first){
+        if(first == NULL){
+        printf("List empty\n");
+        return first;
+    }
+    else if(first->next == NULL){
+        printf("element deleted is %d\n", first->val);
+        free(first);
+        return NULL;
+    }
+    else{
+        node temp;
+        temp = first;
+        while(temp->next != NULL){
+            temp = temp->next;
+        }
+        temp->prev->next = NULL;
+        printf("element deleted is %d\n", temp->val);
+        free(temp);
+        return first;
+    }
+}
+
+node del_pos(node first , int pos){
+    node curr , temp , prev;
+    int count=1;
+    if(first == NULL){
+        printf("List empty\n");
+        return first;
+    }
+    else if(first->next == NULL && pos != 1){
+        printf("invalid position\n");
+        return first;
+    }
+    else if(first->next == NULL && pos == 1){
+        printf("element deleted is %d\n", first->val);
+        free(first);
+        return NULL;
+    }
+    else{
+        curr = first;
+        while(curr != NULL && count != pos){
+            prev = curr;
+            curr = curr->next;
+            count++ ;
+        }
+        if(count == pos){
+            printf("deleted element is %d\n" , curr->val);
+            prev->next = curr->next;
+            curr->next->prev = curr->prev;
+            free(curr);
+        }
+        return first;
+    }
+}
+
+node first = NULL;
+
+void main(){
+    int x = 0, val , position;
+    while(x != 8){
+        printf("\n\n1: Enter from front\n");
+        printf("2: Enter from back\n");
+        printf("3: Enter at pos\n");
+        printf("4: Display\n");
+        printf("5: Delete from front\n");
+        printf("6: Delete from back\n");
+        printf("7: Delete at pos\n");
+        printf("8: Exit\n\n");
+        scanf("%d", &x);
+        switch(x){
+            case 1:
+                printf("Enter value : \n");
+                scanf("%d" , &val);
+                first = ins_beg(first , val);
+                break;
+            case 2:
+                printf("Enter value : \n");
+                scanf("%d" , &val);
+                first = ins_end(first , val);
+                break;
+            case 3:
+                printf("Enter value : \n");
+                scanf("%d" , &val);
+                printf("Enter position : ");
+                scanf("%d" , &position);
+                first = insertAtAnyPosition(first , val , position);
+                break;
+            case 4:
+                first = display(first);
+                break;
+            case 5:
+                first = del_beg(first);
+                break;
+            case 6:
+                first = del_end(first);
+                break;
+            case 7:
+                printf("Enter position : \n");
+                scanf("%d" , &position);
+                first = del_pos(first , position);
+                break;
+            default : printf("invalid choice\n");
+        }
+    }
+}
+
+
